@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rob Magee | Software Engineer & Musician</title>
+<meta name="description" content="Rob Magee is a software engineer and musician. Official site of Rob Magee at robmagee.io.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://robmagee.io/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="robmagee.io">
+<meta property="og:title" content="Rob Magee | Software Engineer & Musician">
+<meta property="og:description" content="Rob Magee is a software engineer and musician.">
+<meta property="og:url" content="https://robmagee.io/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Rob Magee | Software Engineer & Musician">
+<meta name="twitter:description" content="Rob Magee is a software engineer and musician.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Person",
+  "name": "Rob Magee",
+  "url": "https://robmagee.io/",
+  "jobTitle": "Software Engineer",
+  "description": "Rob Magee is a software engineer and musician."
+}
+</script>
+<meta name="color-scheme" content="light dark">
+<script>
+  // ---- Edit me -------------------------------------------------------
+  var CLICKED_TEXT = "My that felt good."; // shown after the click
+  var DARK_FROM = 19; // dark mode starts at 7pm (visitor's local time)
+  var DARK_UNTIL = 7; // ...and ends at 7am
+  // ---------------------------------------------------------------------
+
+  // Theme is set before first paint so there is no flash.
+  var MODES = ["auto", "light", "dark"];
+  function savedMode() {
+    try {
+      var m = localStorage.getItem("theme");
+      return MODES.indexOf(m) > -1 ? m : "auto";
+    } catch (e) { return "auto"; }
+  }
+  function resolve(mode) {
+    if (mode !== "auto") return mode;
+    var h = new Date().getHours();
+    return (h >= DARK_FROM || h < DARK_UNTIL) ? "dark" : "light";
+  }
+  var mode = savedMode();
+  document.documentElement.dataset.theme = resolve(mode);
+</script>
+<style>
+  /* Light = the room lights are on. Dark = lights off, just the phosphor glow. */
+  :root {
+    --room: #d9d3c3;
+    --case: #cfc6ae;
+    --case-hi: #e4dcc6;
+    --case-lo: #a99f86;
+    --label: #5a523f;
+    --screen: #0b1a0d;
+    --phosphor: #41ff6a;
+    --glow: rgba(65, 255, 106, .55);
+    --room-glow: transparent;
+  }
+  :root[data-theme="dark"] {
+    --room: #060706;
+    --case: #2b2922;
+    --case-hi: #3a372e;
+    --case-lo: #17160f;
+    --label: #8d8672;
+    --screen: #030a04;
+    --room-glow: rgba(65, 255, 106, .10);
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    background: var(--room);
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: grid;
+    place-items: center;
+    padding: clamp(.75rem, 3vw, 2rem);
+    font-family: "Print Char 21", "PR Number 3", ui-monospace, "SF Mono", Menlo, Consolas, "Courier New", monospace;
+    transition: background-color .5s ease;
+  }
+
+  /* The monitor case */
+  .monitor {
+    width: min(100%, 860px);
+    background: linear-gradient(180deg, var(--case-hi), var(--case) 18%, var(--case) 80%, var(--case-lo));
+    border-radius: clamp(14px, 3vw, 28px);
+    padding: clamp(.9rem, 3.5vw, 2.25rem) clamp(.9rem, 3.5vw, 2.25rem) clamp(.6rem, 2vw, 1rem);
+    box-shadow:
+      0 0 90px 20px var(--room-glow),
+      0 24px 50px rgba(0, 0, 0, .35),
+      inset 0 2px 0 rgba(255, 255, 255, .25),
+      inset 0 -3px 0 rgba(0, 0, 0, .25);
+    transition: background .5s ease, box-shadow .5s ease;
+  }
+
+  /* The tube */
+  .screen {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    min-height: 300px;
+    width: 100%;
+    background: radial-gradient(ellipse at center, #0f2a14 0%, var(--screen) 75%);
+    border-radius: clamp(18px, 5vw, 44px) / clamp(14px, 4vw, 34px);
+    box-shadow:
+      inset 0 0 0 3px rgba(0, 0, 0, .7),
+      inset 0 0 60px 12px rgba(0, 0, 0, .85),
+      0 0 0 6px var(--case-lo);
+    overflow: hidden;
+    display: grid;
+    place-items: center;
+    padding: 1.25rem;
+    text-align: center;
+    color: var(--phosphor);
+    text-shadow: 0 0 4px var(--glow), 0 0 14px var(--glow);
+  }
+  /* Scanlines */
+  .screen::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0) 0 2px, rgba(0, 0, 0, .28) 2px 4px);
+    pointer-events: none;
+    z-index: 2;
+  }
+  /* Glass reflection */
+  .screen::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(155deg, rgba(255, 255, 255, .09) 0%, rgba(255, 255, 255, 0) 38%);
+    pointer-events: none;
+    z-index: 3;
+  }
+  .content { position: relative; z-index: 1; animation: flicker 5s infinite steps(1); }
+
+  h1 {
+    margin: 0 0 .9em;
+    font-size: clamp(1.6rem, 7.5vw, 4rem);
+    font-weight: 400;
+    letter-spacing: .04em;
+    line-height: 1.1;
+    overflow-wrap: anywhere;
+  }
+  #action {
+    font: inherit;
+    font-size: clamp(1rem, 3.4vw, 1.6rem);
+    letter-spacing: .04em;
+    color: inherit;
+    text-shadow: inherit;
+    background: none;
+    border: 0;
+    padding: .35em .6em;
+    cursor: pointer;
+    line-height: 1.4;
+    max-width: 30ch;
+  }
+  #action .label { text-decoration: underline; text-underline-offset: .3em; }
+  /* Hover/focus = inverse video, the way the old machine did emphasis */
+  #action:not(.done):hover,
+  #action:not(.done):focus-visible {
+    background: var(--phosphor);
+    color: var(--screen);
+    text-shadow: none;
+    box-shadow: 0 0 14px var(--glow);
+    outline: none;
+  }
+  #action.done { cursor: default; }
+  #action.done .label { text-decoration: none; }
+  .cursor {
+    display: inline-block;
+    width: .6em;
+    height: 1em;
+    margin-left: .25em;
+    vertical-align: -.12em;
+    background: currentColor;
+    box-shadow: 0 0 10px var(--glow);
+    animation: blink 1.1s steps(1) infinite;
+  }
+
+  /* Strip under the screen: power light + theme knob */
+  .panel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: clamp(.6rem, 2vw, 1rem);
+    padding: 0 .35rem;
+    font-size: .7rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--label);
+  }
+  .power {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    color: inherit;
+    background: none;
+    border: 0;
+    padding: .5rem .3rem;
+    cursor: pointer;
+  }
+  .power:focus-visible { outline: 2px solid var(--phosphor); outline-offset: 2px; }
+  .power.is-off .led { background: #3a1510; box-shadow: none; }
+  .led {
+    width: .55rem;
+    height: .55rem;
+    border-radius: 50%;
+    background: #ff4b3a;
+    box-shadow: 0 0 6px #ff4b3a;
+  }
+  #theme {
+    font: inherit;
+    letter-spacing: inherit;
+    text-transform: inherit;
+    color: inherit;
+    background: rgba(0, 0, 0, .08);
+    border: 1px solid var(--case-lo);
+    border-radius: 4px;
+    padding: .5rem .8rem;
+    min-height: 2.25rem;
+    cursor: pointer;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2);
+  }
+  #theme:hover { background: rgba(0, 0, 0, .18); }
+  #theme:focus-visible { outline: 2px solid var(--phosphor); outline-offset: 2px; }
+
+  /* Power states: "off" = dark tube, "booting" = boot text instead of the site */
+  .screen.off { background: #000; text-shadow: none; }
+  .screen.off .content,
+  .screen.booting .content { visibility: hidden; }
+  .boot {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    padding: 1.25rem 1.5rem;
+    margin: 0;
+    text-align: left;
+    white-space: pre-wrap;
+    font-size: clamp(.8rem, 2.6vw, 1.15rem);
+    line-height: 1.5;
+    visibility: hidden;
+  }
+  .screen.booting .boot { visibility: visible; }
+
+  @keyframes blink { 50% { opacity: 0; } }
+  @keyframes flicker { 0%, 100% { opacity: 1; } 48% { opacity: .96; } 50% { opacity: 1; } 91% { opacity: .97; } }
+
+  /* Phones in portrait: a taller tube so the text has room */
+  @media (max-width: 520px) and (orientation: portrait) {
+    .screen { aspect-ratio: 3 / 4; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .content, .cursor { animation: none; }
+    body, .monitor { transition: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="monitor">
+    <main class="screen">
+      <div class="content">
+        <h1>robmagee.io</h1>
+        <button id="action" type="button" aria-live="polite"><span class="label">Click Here</span><span class="cursor" aria-hidden="true"></span></button>
+      </div>
+    <div id="boot" class="boot" aria-hidden="true"></div>
+    </main>
+    <div class="panel">
+      <button id="power" class="power" type="button" aria-label="Power off"><span class="led" aria-hidden="true"></span>Power</button>
+      <button id="theme" type="button" aria-label="Change color theme"></button>
+    </div>
+  </div>
+
+<script>
+  var root = document.documentElement;
+  var themeBtn = document.getElementById("theme");
+  var action = document.getElementById("action");
+  var label = action.querySelector(".label");
+
+  function applyTheme() {
+    root.dataset.theme = resolve(mode);
+    themeBtn.textContent = "Lights: " + mode;
+  }
+  themeBtn.addEventListener("click", function () {
+    mode = MODES[(MODES.indexOf(mode) + 1) % MODES.length];
+    try { localStorage.setItem("theme", mode); } catch (e) {}
+    applyTheme();
+  });
+  applyTheme();
+  // In auto mode, flip at the set hours even if the tab stays open.
+  setInterval(function () { if (mode === "auto") applyTheme(); }, 60000);
+
+  // ---- Power: off / reboot with a boot sequence ----
+  var screenEl = document.querySelector(".screen");
+  var bootEl = document.getElementById("boot");
+  var powerBtn = document.getElementById("power");
+  var powerState = "on"; // "on" | "off" | "booting"
+  var BOOT_LINES = [
+    "ROBMAGEE SYSTEMS  BIOS v1.0",
+    "MEMORY ........ 48K OK",
+    "SCANNING DISK . FOUND",
+    "LOADING ROBMAGEE.IO",
+    "",
+    "READY."
+  ];
+
+  function powerOff() {
+    powerState = "off";
+    screenEl.classList.add("off");
+    powerBtn.classList.add("is-off");
+    powerBtn.setAttribute("aria-label", "Power on");
+  }
+  function reboot() {
+    powerState = "booting";
+    screenEl.classList.add("off");
+    powerBtn.classList.add("is-off");
+    setTimeout(function () {
+      screenEl.classList.remove("off");
+      screenEl.classList.add("booting");
+      powerBtn.classList.remove("is-off");
+      bootEl.textContent = "";
+      typeLines(0);
+    }, 900);
+  }
+  function typeLines(i) {
+    if (i >= BOOT_LINES.length) {
+      setTimeout(finishBoot, 900);
+      return;
+    }
+    bootEl.textContent += BOOT_LINES[i] + "\n";
+    setTimeout(function () { typeLines(i + 1); }, 380);
+  }
+  function finishBoot() {
+    screenEl.classList.remove("booting");
+    bootEl.textContent = "";
+    // A reboot starts the site fresh, so the click resets too.
+    label.textContent = "Click Here";
+    action.classList.remove("done");
+    powerState = "on";
+    powerBtn.setAttribute("aria-label", "Power off");
+  }
+  powerBtn.addEventListener("click", function () {
+    if (powerState === "booting") return;
+    if (powerState === "on") powerOff();
+    else reboot();
+  });
+
+  action.addEventListener("click", function () {
+    if (action.classList.contains("done")) return;
+    label.textContent = CLICKED_TEXT;
+    action.classList.add("done");
+    action.blur();
+  });
+</script>
+</body>
+</html>
