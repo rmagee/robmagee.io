@@ -159,7 +159,7 @@
     line-height: 1.4;
     max-width: 30ch;
   }
-  #action .label { text-decoration: underline; text-underline-offset: .3em; }
+  #action .label { text-decoration: none; }
   /* Hover/focus = inverse video, the way the old machine did emphasis */
   #action:not(.done):hover,
   #action:not(.done):focus-visible {
@@ -266,7 +266,7 @@
 </head>
 <body>
   <div class="monitor">
-    <main class="screen">
+    <main class="screen off">
       <div class="content">
         <h1>robmagee.io</h1>
         <button id="action" type="button" aria-live="polite"><span class="label">Click Here</span><span class="cursor" aria-hidden="true"></span></button>
@@ -318,17 +318,18 @@
     powerBtn.classList.add("is-off");
     powerBtn.setAttribute("aria-label", "Power on");
   }
+  function bootUp() {
+    screenEl.classList.remove("off");
+    screenEl.classList.add("booting");
+    powerBtn.classList.remove("is-off");
+    bootEl.textContent = "";
+    typeLines(0);
+  }
   function reboot() {
     powerState = "booting";
     screenEl.classList.add("off");
     powerBtn.classList.add("is-off");
-    setTimeout(function () {
-      screenEl.classList.remove("off");
-      screenEl.classList.add("booting");
-      powerBtn.classList.remove("is-off");
-      bootEl.textContent = "";
-      typeLines(0);
-    }, 900);
+    setTimeout(bootUp, 900);
   }
   function typeLines(i) {
     if (i >= BOOT_LINES.length) {
@@ -347,6 +348,11 @@
     powerState = "on";
     powerBtn.setAttribute("aria-label", "Power off");
   }
+  // Boot on page load: the tube starts dark, then the machine comes up.
+  powerState = "booting";
+  powerBtn.classList.add("is-off");
+  setTimeout(bootUp, 500);
+
   powerBtn.addEventListener("click", function () {
     if (powerState === "booting") return;
     if (powerState === "on") powerOff();
